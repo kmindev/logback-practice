@@ -1,6 +1,6 @@
 <included>
     <!-- logback-variables.properties에 정의되어 있는 Key를 사용하기 위한 코드 -->
-    <property resource="logback-variables.properties" />
+    <property resource="logback-variables.properties"/>
 
     <appender name="REQUEST1" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${LOG_DIR}/request1.log</file>
@@ -80,10 +80,37 @@
         </encoder>
     </appender>
 
+    <appender name="QUERY" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/query.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/archive/query.%d{yyyy-MM-dd}_%i.log</fileNamePattern>
+            <maxFileSize>1KB</maxFileSize>
+            <maxHistory>60</maxHistory>
+        </rollingPolicy>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>${LOG_PATTERN}</pattern>
+            <outputPatternAsHeader>true</outputPatternAsHeader>
+        </encoder>
+    </appender>
+
     <root level="INFO">
-<!--        <appender-ref ref="REQUEST1"/>-->
-<!--        <appender-ref ref="REQUEST2"/>-->
-<!--        <appender-ref ref="MDC"/>-->
+        <!--        <appender-ref ref="REQUEST1"/>-->
+        <!--        <appender-ref ref="REQUEST2"/>-->
+        <!--        <appender-ref ref="MDC"/>-->
         <appender-ref ref="ERROR"/>
     </root>
+
+    <!--
+- Custom하게 생성한 logger 사용법은 'QueryController1,QueryController2'를 참고하자.
+ex) LoggerFactory.getLogger("SQL_LOG");
+
+- additivity는 상위 Logger의 속성을 상속 여부를 정한다.
+-->
+    <logger name="SQL_LOG1" level="INFO" additivity="false">
+        <appender-ref ref="QUERY"/>
+    </logger>
+
+    <logger name="SQL_LOG2" level="INFO" additivity="false">
+        <appender-ref ref="QUERY"/>
+    </logger>
 </included>
